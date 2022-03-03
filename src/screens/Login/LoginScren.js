@@ -1,58 +1,58 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Container, Form, Row } from "react-bootstrap"
+import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import swal from 'sweetalert'
 
-
-const LoginScren=()=>{
+const LoginScren = () => {
     const [UserName, setEmail] = useState("");
     const [Password, setPassword] = useState("");
-    const [allEntry,setAllEntry] = useState([])
+    const [allEntry, setAllEntry] = useState([])
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const history = useNavigate();
-    // async function Login(){
-    //     let item = {Email,Password}
-    //     let result = await fetch("https://mydonatmeapi.herokuapp.com/Login",{
-    //         method: 'POST',
-    //         headers: {
-    //             "Content-Type":"Application/json",
-    //             "Accept":"Application/json"
-    //         },
-    //         body: JSON.stringify(item)
-    //     });
-    //     result= await result.json();
-    //     localStorage.setItem("user-info",JSON.stringify(result))
-    //     history("/dashboard");
-    // }
 
-    const handleSubmite = (e)=>{
+
+    const handleSubmite = (e) => {
         e.preventDefault();
-        const newEntry={Email:UserName,Password:Password};
-        setAllEntry([...allEntry,newEntry]);
+        const newEntry = { Email: UserName, Password: Password };
+        setAllEntry([...allEntry, newEntry]);
     }
-    const handleLogin = ()=>{
-        let credentials = {UserName,Password}
+    const handleLogin = () => {
+        let credentials = { UserName, Password }
         console.log(credentials)
+        setIsLoading(true)
         const url = 'https://mydonatmeapi.herokuapp.com/portalLogin'
-        axios
-        .post(url,credentials)
-        .then((response)=>{
-            const result = response.data;
-            const { status, message, data } = result;
-            localStorage.setItem('token',result.data.token)
-            localStorage.setItem('ID',result.data._id)
+        axios.post(url, credentials)
+            .then(res => {
+                const result = res.data;
+                const { message, status, data } = result;
                 if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
+                    swal({
+                        title: status,
+                        text: message,
+                        icon: "warning",
+                    }).then((value) => {
+                        setIsLoading(false)
+                    })
                 } else {
-                    console.log(data)
-                    window.location.reload()
+                    swal({
+                        title: status,
+                        text: message,
+                        icon: "success",
+                    }).then((value) => {
+                        setIsLoading(false)
+                        localStorage.setItem('token', result.data.token)
+                        localStorage.setItem('ID', result.data._id)
+                        window.location.reload()
+                    })
                 }
-        })
-        .catch(error=>{
-            console.log(error)
-        })
+            })
+            .catch(error => {
+                setIsLoading(false)
+                console.log(error)
+            })
     }
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
@@ -80,9 +80,18 @@ const LoginScren=()=>{
                             {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
                                 <Form.Check type="checkbox" label="Check me out" />
                             </Form.Group> */}
-                            <Button variant="success col-12" type="submit" onClick={handleLogin}>
-                                Login
-                            </Button>
+                            {!isLoading && (
+                                <Button variant="success col-12" type="submit" onClick={handleLogin}>
+                                    Login
+                                </Button>
+                            )}
+                            {isLoading && (
+                                <Button variant="success col-12" type="submit" onClick={handleLogin}>
+                                    <Spinner animation="border" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </Spinner>
+                                </Button>
+                            )}
                         </Form>
                     </Col>
                 </Row>

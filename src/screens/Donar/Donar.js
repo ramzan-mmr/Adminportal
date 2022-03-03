@@ -139,7 +139,7 @@ function Donar() {
                                     </form>
                                 </div>
                             </div>
-                            <div className="col-sm-3 offset-sm-2 mt-5" style={{ color: "black" }}><h4><b>Donars Details</b></h4></div>
+                            <div className="col-sm-3 offset-sm-2 mt-5" style={{ color: "black" }}><h4><b>Donors Details</b></h4></div>
                             {/* <div className="col-sm-3 offset-sm-1  mt-5 mb-4 text-gred">
                                 <Button variant="primary" onClick={handleShow}><i className="fa fa-plus"></i>
                                     Add New Donars
@@ -243,7 +243,7 @@ function Donar() {
                         keyboard={false}
                     >
                         <Modal.Header closeButton>
-                            <Modal.Title>View Record</Modal.Title>
+                            <Modal.Title>View Donors</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <form>
@@ -291,7 +291,7 @@ function Donar() {
                         keyboard={false}
                     >
                         <Modal.Header closeButton>
-                            <Modal.Title>Add Record</Modal.Title>
+                            <Modal.Title>Add Donors</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <form>
@@ -314,7 +314,7 @@ function Donar() {
                                     <input type="text" className="form-control" onChange={(e) => setAddress(e.target.value)} placeholder="Enter Hospital description" defaultValue={RowData.address}/>
                                 </div>
 
-                                <button type="submit" className="btn btn-warning mt-4" onClick={handleEdit}>Edit Record</button>
+                                <button type="submit" className="btn btn-warning mt-4" onClick={handleEdit}>Edit Donors</button>
                             </form>
                         </Modal.Body>
                         <Modal.Footer>

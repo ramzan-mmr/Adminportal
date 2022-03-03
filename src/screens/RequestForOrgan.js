@@ -24,6 +24,7 @@ const RequestForOrgan = () => {
     const [PatDOB, setPatDOB] = useState("");
     const [PatRequired, setPatRequired] = useState("");
     const [Description, setDescription] = useState("");
+    const [Age, setAge] = useState("");
 
     const [isSubmit, setIsSubmit] = useState(false);
 
@@ -66,10 +67,24 @@ const RequestForOrgan = () => {
     const handleselect = (e) => {
         setPatRequired(e.value)
     }
+    function getAge(dateString) {
+        var today = new Date();
+        var birthDate = new Date(dateString);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        setAge(age)
+        return age;
+    }
     const handleRequest = () => {
-        const credentials = { "HosId": ID, "HosName": HosName, "HosLocation": HosLocation, "PatName": PatName, "PatDecease": PatDecease, "PatCnic": PatCnic, "PatDOB": PatDOB, "PatRequired": PatRequired, "Description": Description }
-        
+        const resutl = getAge(PatDOB)
+        const CreatedON = new Date();
+        const credentials = { "HosId": ID, "PatName": PatName, "PatDecease": PatDecease, "PatCnic": PatCnic, "PatDOB": PatDOB, "Age": resutl, "PatRequired": PatRequired, "Description": Description,CreatedON}
+        console.log(credentials)
         const url = 'https://mydonatmeapi.herokuapp.com/Request'
+        // const url = 'http://localhost:8000/Request'
         axios
             .post(url, credentials, {
                 headers: { "Authorization": `Bearer ${token}` }
@@ -78,12 +93,16 @@ const RequestForOrgan = () => {
                 const result = response.data;
                 const { status, message } = result;
                 if (status !== 'SUCCESS') {
-                    alert(message, status)
+                    swl({
+                        title: status,
+                        text: message,
+                        icon: "warning",
+                    })
                 } else {
                     swl({
                         icon: "success",
                         text: message
-                    });
+                    })
                     history('/requestbyHos')
                 }
             })
@@ -104,22 +123,10 @@ const RequestForOrgan = () => {
                         <div style={{ padding: 30 }}>
                             <Form onSubmit={handleSubmit}>
                                 <Row>
-                                    <Col xs={6} md={6}>
                                         <Form.Group controlId="form.Name">
                                             <Form.Label>Hospital ID</Form.Label>
                                             <Form.Control type="text" disabled defaultValue={ID} />
                                         </Form.Group>
-                                        <Form.Group controlId="form.Email">
-                                            <Form.Label>Hospital Name</Form.Label>
-                                            <Form.Control type="text" name='HosName' defaultValue={HosName} onChange={(e) => setHosName(e.target.value)} />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col xs={6} md={6}>
-                                        <Form.Group controlId="form.Name">
-                                            <Form.Label>Hospital Location</Form.Label>
-                                            <Form.Control type="text" name='HosLocation' defaultValue={HosLocation} onChange={(e) => setHosLocation(e.target.value)} />
-                                        </Form.Group>
-                                    </Col>
                                 </Row>
                                 <ColoredLine color="red" />
                                 <Row>

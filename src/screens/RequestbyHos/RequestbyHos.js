@@ -8,8 +8,9 @@ import RequestForOrgan from '../RequestForOrgan';
 import { useNavigate } from 'react-router';
 import swal from 'sweetalert'
 import { AsyncStorage } from 'AsyncStorage';
+import MatchingDataWithRequest from '../MatchingDataWithRequest';
 
-const RequestbyHos = () => {
+const RequestbyHos = (props) => {
     const history = useNavigate();
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +45,7 @@ const RequestbyHos = () => {
     }
     const GetAllHospitalRecord = () => {
         const HosId = localStorage.getItem('ID');
+        //http://localhost:8000  
         axios.get(`https://mydonatmeapi.herokuapp.com/Request/${HosId}`)
             .then(response => {
                 const result = response.data;
@@ -67,7 +69,7 @@ const RequestbyHos = () => {
         })
             .then((response) => {
                 const result = response.data;
-                const { status, message, data } = result;
+                const { status, message } = result;
                 if (status !== 'SUCCESS') {
                     swal({
                         title: status,
@@ -122,7 +124,7 @@ const RequestbyHos = () => {
     }
     const GetAdminRecoord = () => {
         const token = localStorage.getItem("token")
-        axios.get(`https://mydonatmeapi.herokuapp.com/allRequest`,{ headers: { "Authorization": `Bearer ${token}`} })
+        axios.get(`https://mydonatmeapi.herokuapp.com/allRequest`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(response => {
                 const result = response.data;
                 const { status, message, data } = result;
@@ -145,6 +147,9 @@ const RequestbyHos = () => {
             GetAllHospitalRecord();
         }
     }
+    const handleMatchCheck = (item)=>{
+        history('/matchingDataWithRequest',{state:{data:item}})
+    }
     useEffect(() => {
         getData()
     }, [])
@@ -165,10 +170,10 @@ const RequestbyHos = () => {
                                         </form>
                                     </div>
                                 </div>
-                                <div className="col-sm-3 offset-sm-2 mt-5" style={{ color: "black" }}><h4><b>Organs Details</b></h4></div>
+                                <div className="col-sm-3 offset-sm-2 mt-5" style={{ color: "black" }}><h4><b>Request For Organ</b></h4></div>
                                 <div className="col-sm-3 offset-sm-1  mt-5 mb-4 text-gred">
                                     <Button variant="primary" onClick={handleShow}><i className="fa fa-plus"></i>
-                                        Add New Organ
+                                        Request New Organ
                                     </Button>
                                 </div>
                             </div>
@@ -184,7 +189,9 @@ const RequestbyHos = () => {
                                                 <th>P DOB</th>
                                                 <th>P Request</th>
                                                 <th>H Name</th>
+                                                <th>Status</th>
                                                 <th>isActive</th>
+                                                <th>Matched</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -198,7 +205,9 @@ const RequestbyHos = () => {
                                                     <td>{item.PatDOB}</td>
                                                     <td>{item.PatRequired}</td>
                                                     <td>{item.HosName}</td>
-                                                    <td>{item.isActive}</td>
+                                                    <td>{item.Status === "Completed"? <p style={{ color: "#3ea175" }}>Completed</p>: <p style={{ color: "#ffc107" }}>Requested</p>}</td>
+                                                    <td>{item.isActive ? "Yes" : "NO"}</td>
+                                                    <td><Button size="sm" variant="primary" onClick={()=>handleMatchCheck(item)}>check</Button></td>
                                                     <td style={{ minWidth: 180 }}>
                                                         <Button size="sm" variant="primary" onClick={() => handleViewShow(setRowData(item), setView(true), setDelete(false))}>View</Button>|
                                                         <Button size="sm" variant="warning" onClick={() => handleEditShow(setRowData(item), setID(item._id))}>Edit</Button>|

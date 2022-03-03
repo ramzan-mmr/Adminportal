@@ -6,6 +6,7 @@ import { Container, Row, Table, Col, Button, Modal, Figure } from "react-bootstr
 import axios from "axios"
 import { icons } from "material-icons"
 import FileUploader from "../../components/FileUploader";
+import swal from 'sweetalert'
 
 const Organ = (() => {
     const [data, setData] = useState([]);
@@ -36,26 +37,37 @@ const Organ = (() => {
     const handleOrganUpload = () => {
         const token = localStorage.getItem("token")
         const ID = localStorage.getItem("ID")
-        const credentials = [{ "organName": organName, "avatar": image, "isActive": "true", "userID": ID }]
+        const credentials = { "organName": organName,"avatar": image, "isActive": "true", "userID": ID }
         handleMessage(null);
+        console.log(credentials)
         const url = `https://mydonatmeapi.herokuapp.com/Organ`;
         axios
-            .post(url,credentials,
-                { 
-                    headers: { "Authorization": `Bearer ${token}` }
+            .post(url, credentials)
+                .then(response => {
+                    const result = response.data;
+                    const { status, message } = result;
+                    if (status !== 'SUCCESS') {
+                        swal({
+                            title: status,
+                            text: message,
+                            icon: "error",
+                        }).then((value) => {
+                            window.location.reload()
+                        })
+                        console.log(status)
+                    } else {
+                        swal({
+                            title: status,
+                            text: message,
+                            icon: "success",
+                        }).then((value) => {
+                            window.location.reload()
+                        })
+                    }
                 })
-            .then(response => {
-                const result = response.data;
-                const { status, message } = result;
-                if (status !== 'SUCCESS') {
-                    console.log(message)
-                } else {
-                    console.log(message)
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
+                .catch(err => {
+                    console.log(err)
+                })
     };
 
     const handleMessage = (message, type = '') => {
@@ -84,7 +96,7 @@ const Organ = (() => {
         const url = `https://mydonatmeapi.herokuapp.com/Organ/${ID}`
         axios.delete(url, {
             headers: { "Authorization": `Bearer ${token}` },
-            value:true
+            value: true
         })
             .then((response) => {
                 const result = response.data;
@@ -93,19 +105,24 @@ const Organ = (() => {
                     handleMessage(message, status);
                     alert(message, status)
                 } else {
-                    alert(message)
-                    setShow(false)
-                    window.location.reload();
+                    swal({
+                        title: status,
+                        text: message,
+                        icon: "success",
+                    }).then((value) => {
+                        window.location.reload()
+                    })
                 }
             })
             .catch(error => {
                 console.log(error)
             })
     }
-    const onImageChange = (event) => {
-        if (event.target.files && event.target.files[0]) {
-            setImage(URL.createObjectURL(event.target.files[0]));
+    const onImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setImage(URL.createObjectURL(e.target.files[0]));
         }
+        console.log(e.target.files[0])
     }
     useEffect(() => {
         setIsLoading(true)
@@ -185,7 +202,7 @@ const Organ = (() => {
                                     <input type="text" className="form-control" onChange={(e) => setName(e.target.value)} placeholder="Enter Organ Name" />
                                 </div>
                                 <div className="mt-3">
-                                    <input type="file" onChange={onImageChange} className="filetype" />
+                                    <input type="file" onChange={(e)=>{onImageChange(e)}} className="filetype" />
                                     <img src={image} alt="preview image" style={{ width: 200 }} className="mt-3" />
                                 </div>
                                 <button type="submit" className="btn btn-success mt-4" onClick={handleOrganUpload}>Add Record</button>

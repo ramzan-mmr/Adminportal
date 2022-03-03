@@ -7,6 +7,7 @@ import axios from "axios"
 import { icons } from "material-icons"
 import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
+import MapRender from "../MapRender";
 
 function Hospital() {
     const history = useNavigate();
@@ -25,11 +26,13 @@ function Hospital() {
     const handleEditClose = () => setEditShow(false);
     const handleEditShow = () => setEditShow(true);
 
+    const [mapModel, setMapeModel] = useState(false);
     const [Delete, setDelete] = useState(false)
+    const handleMapClose = () => setMapeModel(false);
+    const handleMapShow = () => setMapeModel(true);
 
     const [RowData, setRowData] = useState([]);
     const [Message, setMessage] = useState("")
-    const [MessageType, setMessageType] = useState("")
 
     const [Name, setName] = useState(RowData.Name)
     const [Email, setEmail] = useState(RowData.Email);
@@ -41,12 +44,12 @@ function Hospital() {
     const [UserName, setHospUserName] = useState("");
 
     const [ID, setID] = useState("");
-    
+
     const handleSubmitte = (e) => {
         e.preventDefault();
     }
     const handleSignup = () => {
-        let credentials = { Name, Email, Location, HelpLine, HospDis,UserName,Password,Role:"Hospital" }
+        let credentials = { Name, Email, Location, HelpLine, HospDis, UserName, Password, Role: "Hospital" }
         console.log(credentials)
         const url = 'https://mydonatmeapi.herokuapp.com/hospital/addHospital'
         axios
@@ -119,20 +122,20 @@ function Hospital() {
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                     swal({
-                        title: status ,
+                        title: status,
                         text: message,
                         icon: "warning",
-                      }).then((value)=>{
-                          window.location.reload()
-                      })
+                    }).then((value) => {
+                        window.location.reload()
+                    })
                 } else {
                     swal({
-                        title: status ,
+                        title: status,
                         text: message,
                         icon: "success",
-                      }).then((value)=>{
-                          window.location.reload()
-                      })
+                    }).then((value) => {
+                        window.location.reload()
+                    })
                 }
             })
             .catch(error => {
@@ -188,7 +191,7 @@ function Hospital() {
                                                 <td>{item.Email}</td>
                                                 <td>{item.HelpLine}</td>
                                                 <td>{item.Location}</td>
-                                                <td>{item.IsActive}</td>
+                                                <td>{item.IsActive ? <p style={{ color: "#3ea175" }}>Active</p> : <p style={{ color: "#ffc107" }}>Disabled</p>}</td>
                                                 <td style={{ minWidth: 180 }}>
                                                     <Button size="sm" variant="primary" onClick={() => handleViewShow(setRowData(item), setView(true), setDelete(false))}>View</Button>|
                                                     <Button size="sm" variant="warning" onClick={() => handleEditShow(setRowData(item), setID(item._id))}>Edit</Button>|
@@ -214,30 +217,31 @@ function Hospital() {
                         keyboard={false}
                     >
                         <Modal.Header closeButton>
-                            <Modal.Title>Add Record</Modal.Title>
+                            <Modal.Title>Add Hospital</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <div>
                                 <div className="form-group">
-                                    <input type="text" className="form-control" onChange={(e) => setName(e.target.value)} placeholder="Enter Name" />
+                                    <input type="text" className="form-control" onChange={(e) => setName(e.target.value)} placeholder="Enter hospital Name" />
                                 </div>
                                 <div className="form-group mt-3">
-                                    <input type="email" className="form-control" onChange={(e) => setEmail(e.target.value)} placeholder="Enter Email" />
+                                    <input type="email" className="form-control" onChange={(e) => setEmail(e.target.value)} placeholder="Enter hospital Email" />
                                 </div>
                                 <div className="form-group mt-3">
-                                    <input type="text" className="form-control" onChange={(e) => setLocation(e.target.value)} placeholder="Enter Location" />
+                                    {/* <Button className="form-control" type="button" onClick={() => handleMapShow(setMapeModel(true))}>Please select hospital location</Button> */}
+                                    <input type="text" className="form-control" onChange={(e) => setLocation(e.target.value)} placeholder="Enter hospital Location" />
                                 </div>
                                 <div className="form-group mt-3">
-                                    <input type="text" className="form-control" onChange={(e) => setHelpLine(e.target.value)} placeholder="Enter HelpLine" />
+                                    <input type="text" className="form-control" onChange={(e) => setHelpLine(e.target.value)} placeholder="Enter hospital HelpLine" />
                                 </div>
                                 <div className="form-group mt-3">
                                     <input type="text" className="form-control" onChange={(e) => setHospDis(e.target.value)} placeholder="Enter Hospital description" />
                                 </div>
                                 <div className="form-group mt-3">
-                                    <input type="text" className="form-control" onChange={(e) => setHospUserName(e.target.value)} placeholder="Enter UserName" />
+                                    <input type="text" className="form-control" onChange={(e) => setHospUserName(e.target.value)} placeholder="Enter hospital UserName" />
                                 </div>
                                 <div className="form-group mt-3">
-                                    <input type="text" className="form-control" onChange={(e) => setHosPass(e.target.value)} placeholder="Enter Password" />
+                                    <input type="text" className="form-control" onChange={(e) => setHosPass(e.target.value)} placeholder="Enter hospital Password" />
                                 </div>
                                 <div className="form-group mt-3">
                                     <input type="text" className="form-control" onChange={(e) => setHospConPass(e.target.value)} placeholder="Confirm Password" />
@@ -255,7 +259,31 @@ function Hospital() {
                     </Modal>
                 </div>
                 {/* Model Box Finsihs */}
+                {/* Map Model */}
+                <div className="model_box_Map">
+                    <Modal
+                        show={mapModel}
+                        onHide={handleMapClose}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>Select Map</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div>
+                                <MapRender />
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button type="submit" className="btn btn-success" variant="secondary">Select Location</Button>
+                            <Button variant="secondary" onClick={handleMapClose}>
+                                Close
+                            </Button>
 
+                        </Modal.Footer>
+                    </Modal>
+                </div>
                 {/* View Record */}
                 <div className="model_box_view">
                     <Modal
@@ -265,7 +293,7 @@ function Hospital() {
                         keyboard={false}
                     >
                         <Modal.Header closeButton>
-                            <Modal.Title>Add Record</Modal.Title>
+                            <Modal.Title>Add Hospital</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <div>
@@ -307,7 +335,7 @@ function Hospital() {
                         keyboard={false}
                     >
                         <Modal.Header closeButton>
-                            <Modal.Title>Add Record</Modal.Title>
+                            <Modal.Title>Edit Record</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <div>

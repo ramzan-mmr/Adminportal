@@ -14,6 +14,10 @@ import Jwt from 'jwt-decode'
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom"
 import RequestForOrgan from "../screens/RequestForOrgan";
 import PortalUser from "../screens/portalUser/PortalUser";
+import MatchingDataWithRequest from "../screens/MatchingDataWithRequest";
+import HospitalReports from "../Reports/HospitalReports";
+import NoOfTransplant from "../screens/NoOfTransplant";
+import SelectedDonar from "../screens/SelectedDonar"
 
 
 const RootStack = () => {
@@ -48,6 +52,10 @@ const RootStack = () => {
             <Route path="/users" exact element={<Users />} />
             <Route path="/requestbyHos" exact element={<RequestbyHos />} />
             <Route path="/portalUser" exact element={<PortalUser />} />
+            <Route path="/matchingDataWithRequest" exact element={<MatchingDataWithRequest />} />
+            <Route path="/hospitalReports" exact element={<HospitalReports />} />
+            <Route path="/selectedDonar" exact element={<SelectedDonar/>}/>
+
             <Route path="/*" exact element={<PageNotFound />} />
           </Routes>
         </Router>
@@ -57,9 +65,11 @@ const RootStack = () => {
         <Router>
           <Routes>
             <Route path="/" exact element={<Dashboard />} />
-            <Route path="/donar" exact element={<Donar />} />
             <Route path="/requestbyHos" exact element={<RequestbyHos />} />
             <Route path="/requestForOrgan" exact element={<RequestForOrgan />} />
+            <Route path="/matchingDataWithRequest" exact element={<MatchingDataWithRequest />} />
+            <Route path="/noOfTransplant" exact element={<NoOfTransplant/>}/>
+            <Route path="/selectedDonar" exact element={<SelectedDonar/>}/>
             <Route path="/*" exact element={<PageNotFound />} />
           </Routes>
         </Router>

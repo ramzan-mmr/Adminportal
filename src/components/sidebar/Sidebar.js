@@ -26,8 +26,8 @@ const Sidebar = ({ sidebarOpen, closeSidebar }) => {
     <div className={sidebarOpen ? "sidebar_responsive" : ""} id="sidebar">
       <div className="sidebar__title">
         <div className="sidebar__img">
-          <img src={organlogo} alt="organlogo" style={{ borderRadius: "50%" }} />
-          <h1>Portal</h1>
+          <img src={organlogo} style={{ width: 80, height: 80, borderRadius: 1000}} />
+          <h1 style={{marginLeft:10}}>{Role} Portal</h1>
         </div>
         <i
           onClick={() => closeSidebar()}
@@ -46,7 +46,7 @@ const Sidebar = ({ sidebarOpen, closeSidebar }) => {
 
           {/* <h2>Hospital</h2> */}
           <div className="sidebar__link">
-            <i className="fa fa-building-o"></i>
+            <i className="fa fa-hospital-o"></i>
             <a onClick={() => history('/hospital')} href="#">Hospital</a>
           </div>
 
@@ -56,7 +56,7 @@ const Sidebar = ({ sidebarOpen, closeSidebar }) => {
           </div>
           <div className="sidebar__link">
             <i className="fa fa-building-o"></i>
-            <a onClick={() => history('/donar')} href="#">Donars</a>
+            <a onClick={() => history('/donar')} href="#">Donors</a>
           </div>
 
           <div className="sidebar__link">
@@ -75,7 +75,7 @@ const Sidebar = ({ sidebarOpen, closeSidebar }) => {
 
           <div className="sidebar__link">
             <i className="fa fa-question"></i>
-            <a href="#">Hospital Report's</a>
+            <a onClick={() => history('/hospitalReports')} href="#">Hospital Report's</a>
           </div>
           <div className="sidebar__link">
             <i className="fa fa-question"></i>
@@ -106,7 +106,7 @@ const Sidebar = ({ sidebarOpen, closeSidebar }) => {
           </div>
           <div className="sidebar__link">
             <i className="fa fa-building-o"></i>
-            <a onClick={() => history('/donar')} href="#">Donars</a>
+            <a onClick={() => history('/noOfTransplant')} href="#">Transplanted</a>
           </div>
 
           <h2>Report's</h2>
